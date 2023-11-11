@@ -1,0 +1,22 @@
+[package]
+name = "lightningscanner"
+description = "A lightning-fast memory pattern scanner, capable of scanning gigabytes of data per second."
+edition = "2021"
+version = "1.0.0"
+authors = ["localcc"]
+license = "MIT"
+keywords = ["memory", "pattern", "reverse-engineering", "game-hacking"]
+categories = ["algorithms"]
+repository = "https://github.com/localcc/lightningscanner-rs"
+
+[dependencies]
+elain = "0.3.0"
+parking_lot = "0.12.1"
+
+[dev-dependencies]
+criterion = "0.5.1"
+tinyrand = "0.5.0"
+
+[[bench]]
+name = "scan_1gb"
+harness = false
