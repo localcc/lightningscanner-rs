@@ -28,21 +28,24 @@ fn benchmark(c: &mut Criterion) {
     group.bench_function("scalar", |b| {
         let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c 24 ?? 48 89 74 24 ?? 48 89 7c 24 ?? 41 56 41 57 4c 8b 79 38 aa bf cd");
         b.iter(|| {
-            scanner.find(Some(ScanMode::Scalar), &data)
+            // SAFETY: data is a valid slice
+            unsafe { scanner.find(Some(ScanMode::Scalar), data.as_ptr(), data.len()) }
         });
     });
 
     group.bench_function("sse4.2", |b| {
         let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c 24 ?? 48 89 74 24 ?? 48 89 7c 24 ?? 41 56 41 57 4c 8b 79 38 aa bf cd");
         b.iter(|| {
-            scanner.find(Some(ScanMode::Sse42), &data)
+            // SAFETY: data is a valid slice
+            unsafe { scanner.find(Some(ScanMode::Sse42), data.as_ptr(), data.len()) }
         });
     });
 
     group.bench_function("avx2", |b| {
         let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c 24 ?? 48 89 74 24 ?? 48 89 7c 24 ?? 41 56 41 57 4c 8b 79 38 aa bf cd");
         b.iter(|| {
-            scanner.find(Some(ScanMode::Avx2), &data)
+            // SAFETY: data is a valid slice
+            unsafe { scanner.find(Some(ScanMode::Avx2), data.as_ptr(), data.len()) }
         });
     });
 

@@ -35,7 +35,7 @@ pub unsafe fn find(pattern: &Pattern, binary: *const u8, binary_size: usize) -> 
             };
 
             // SAFETY: checked addr is always in binary bounds
-            if unsafe { *checked_addr } != pattern.data[pattern_offset] {
+            if unsafe { checked_addr.read_volatile() } != pattern.data[pattern_offset] {
                 found = false;
                 break;
             }

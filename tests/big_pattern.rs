@@ -17,7 +17,8 @@ const DATA_SET: [u8; 128] = [
 #[cfg(target_feature = "avx2")]
 fn avx2() {
     let scanner = Scanner::new(PATTERN);
-    let result = scanner.find(Some(ScanMode::Avx2), &DATA_SET);
+    // SAFETY: DATA_SET is a valid slice
+    let result = unsafe { scanner.find(Some(ScanMode::Avx2), DATA_SET.as_ptr(), DATA_SET.len()) };
 
     let data_set_addr = DATA_SET.as_ptr() as usize;
     let ptr = result.get_addr() as usize;
@@ -29,7 +30,8 @@ fn avx2() {
 #[cfg(target_feature = "sse4.2")]
 fn sse42() {
     let scanner = Scanner::new(PATTERN);
-    let result = scanner.find(Some(ScanMode::Sse42), &DATA_SET);
+    // SAFETY: DATA_SET is a valid slice
+    let result = unsafe { scanner.find(Some(ScanMode::Sse42), DATA_SET.as_ptr(), DATA_SET.len()) };
 
     let data_set_addr = DATA_SET.as_ptr() as usize;
     let ptr = result.get_addr() as usize;
@@ -40,7 +42,8 @@ fn sse42() {
 #[test]
 fn scalar() {
     let scanner = Scanner::new(PATTERN);
-    let result = scanner.find(Some(ScanMode::Scalar), &DATA_SET);
+    // SAFETY: DATA_SET is a valid slice
+    let result = unsafe { scanner.find(Some(ScanMode::Scalar), DATA_SET.as_ptr(), DATA_SET.len()) };
 
     let data_set_addr = DATA_SET.as_ptr() as usize;
     let ptr = result.get_addr() as usize;

@@ -10,7 +10,7 @@
 //! let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
 //!
 //! let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-//! let result = scanner.find(None, &binary);
+//! let result = unsafe { scanner.find(None, binary.as_ptr(), binary.len()) };
 //!
 //! println!("{:?}", result);
 //! ```
@@ -49,32 +49,6 @@ impl Scanner {
     /// * `preferred_scan_mode` - preferred scan mode to use (Avx2, Sse42, Scalar)
     /// if the preferred mode is not available, will choose the fastest out of the availble ones
     ///
-    /// * `binary` - binary to search for the pattern in
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use lightningscanner::Scanner;
-    ///
-    /// let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
-    ///
-    /// let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-    /// let result = scanner.find(None, &binary);
-    ///
-    /// println!("{:?}", result);
-    /// ```
-    pub fn find(&self, preferred_scan_mode: Option<ScanMode>, binary: &[u8]) -> ScanResult {
-        // SAFETY: always safe to call because binary is a valid slice
-        unsafe { self.find_ptr(preferred_scan_mode, binary.as_ptr(), binary.len()) }
-    }
-
-    /// Find the first occurence of the pattern in the binary
-    ///
-    /// # Params
-    ///
-    /// * `preferred_scan_mode` - preferred scan mode to use (Avx2, Sse42, Scalar)
-    /// if the preferred mode is not available, will choose the fastest out of the availble ones
-    ///
     /// * `binary_ptr` - pointer to the first element of the binary to search the pattern in
     ///
     /// * `binary_size` - binary size
@@ -93,11 +67,11 @@ impl Scanner {
     /// let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
     ///
     /// let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-    /// let result = unsafe { scanner.find_ptr(None, binary.as_ptr(), binary.len()) };
+    /// let result = unsafe { scanner.find(None, binary.as_ptr(), binary.len()) };
     ///
     /// println!("{:?}", result);
     /// ```
-    pub unsafe fn find_ptr(
+    pub unsafe fn find(
         &self,
         preferred_scan_mode: Option<ScanMode>,
         binary_ptr: *const u8,
