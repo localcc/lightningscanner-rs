@@ -2,7 +2,7 @@
 name = "lightningscanner"
 description = "A lightning-fast memory pattern scanner, capable of scanning gigabytes of data per second."
 edition = "2021"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["localcc"]
 license = "MIT"
 keywords = ["memory", "pattern", "reverse-engineering", "game-hacking"]
