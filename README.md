@@ -20,7 +20,7 @@ fn main() {
     let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
 
     let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-    let result = scanner.find(None, &binary);
+    let result = unsafe { scanner.find(None, binary.as_ptr(), binary.len()) };
 
     println!("{:?}", result);
 }
