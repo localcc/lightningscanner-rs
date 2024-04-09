@@ -2,8 +2,9 @@
 
 extern crate alloc;
 
-use std::ops::Deref;
+use core::ops::Deref;
 
+use alloc::boxed::Box;
 use elain::{Align, Alignment};
 
 #[repr(C)]

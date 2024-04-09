@@ -1,5 +1,7 @@
 //! IDA-style pattern
 
+use alloc::{boxed::Box, vec::Vec};
+
 use crate::aligned_bytes::AlignedBytes;
 
 /// An IDA-style binary pattern
@@ -62,7 +64,9 @@ impl Pattern {
 
         let unpadded_size = data.len();
 
-        let count = f32::ceil(unpadded_size as f32 / Self::ALIGNMENT as f32) as usize;
+        let count =
+            unsafe { core::intrinsics::ceilf32(unpadded_size as f32 / Self::ALIGNMENT as f32) }
+                as usize;
         let padding_size = count * Self::ALIGNMENT - unpadded_size;
 
         data.resize(unpadded_size + padding_size, 0);

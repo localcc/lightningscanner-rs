@@ -1,3 +1,6 @@
+#![no_std]
+#![feature(core_intrinsics)]
+
 //! LightningScanner
 //!
 //! A lightning-fast memory pattern scanner, capable of scanning gigabytes of data per second.
@@ -17,6 +20,8 @@
 #![deny(unsafe_op_in_unsafe_fn, clippy::undocumented_unsafe_blocks)]
 
 use crate::pattern::Pattern;
+
+extern crate alloc;
 
 mod aligned_bytes;
 mod backends;
