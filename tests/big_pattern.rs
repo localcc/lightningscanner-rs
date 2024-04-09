@@ -1,4 +1,4 @@
-use lightningscanner::{ScanMode, Scanner};
+use lightningscanner::Scanner;
 
 const PATTERN: &str = "42 cd e7 f8 21 5b d6 b8 d1 be 12 0e 85 34 c4 ?? 03 7e bc 7b b9 29 b6 07 31 7e ?? dd 3e 0a e7 71 f3 b7 76 3f 36 e1 f3 3b c6 e5 ?? f8 97 67 86 60";
 
@@ -14,36 +14,10 @@ const DATA_SET: [u8; 128] = [
 ];
 
 #[test]
-#[cfg(target_feature = "avx2")]
-fn avx2() {
-    let scanner = Scanner::new(PATTERN);
-    // SAFETY: DATA_SET is a valid slice
-    let result = unsafe { scanner.find(Some(ScanMode::Avx2), DATA_SET.as_ptr(), DATA_SET.len()) };
-
-    let data_set_addr = DATA_SET.as_ptr() as usize;
-    let ptr = result.get_addr() as usize;
-
-    assert_eq!(ptr - data_set_addr, 0x40);
-}
-
-#[test]
-#[cfg(target_feature = "sse4.2")]
-fn sse42() {
-    let scanner = Scanner::new(PATTERN);
-    // SAFETY: DATA_SET is a valid slice
-    let result = unsafe { scanner.find(Some(ScanMode::Sse42), DATA_SET.as_ptr(), DATA_SET.len()) };
-
-    let data_set_addr = DATA_SET.as_ptr() as usize;
-    let ptr = result.get_addr() as usize;
-
-    assert_eq!(ptr - data_set_addr, 0x40);
-}
-
-#[test]
 fn scalar() {
     let scanner = Scanner::new(PATTERN);
     // SAFETY: DATA_SET is a valid slice
-    let result = unsafe { scanner.find(Some(ScanMode::Scalar), DATA_SET.as_ptr(), DATA_SET.len()) };
+    let result = unsafe { scanner.find(DATA_SET.as_ptr(), DATA_SET.len()) };
 
     let data_set_addr = DATA_SET.as_ptr() as usize;
     let ptr = result.get_addr() as usize;

@@ -1,12 +1,13 @@
 //! IDA-style pattern
 
+use alloc::{boxed::Box, vec::Vec};
+
 use crate::aligned_bytes::AlignedBytes;
 
 /// An IDA-style binary pattern
 pub struct Pattern {
     pub(crate) data: Box<AlignedBytes<32>>,
     pub(crate) mask: Box<AlignedBytes<32>>,
-    pub(crate) unpadded_size: usize,
 }
 
 impl Pattern {
@@ -63,7 +64,9 @@ impl Pattern {
 
         let unpadded_size = data.len();
 
-        let count = f32::ceil(unpadded_size as f32 / Self::ALIGNMENT as f32) as usize;
+        let count =
+            unsafe { core::intrinsics::ceilf32(unpadded_size as f32 / Self::ALIGNMENT as f32) }
+                as usize;
         let padding_size = count * Self::ALIGNMENT - unpadded_size;
 
         data.resize(unpadded_size + padding_size, 0);
@@ -72,7 +75,6 @@ impl Pattern {
         Pattern {
             data: AlignedBytes::new(&data),
             mask: AlignedBytes::new(&mask),
-            unpadded_size,
         }
     }
 

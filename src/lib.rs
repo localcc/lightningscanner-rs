@@ -1,3 +1,7 @@
+#![no_std]
+#![allow(internal_features)]
+#![feature(core_intrinsics)]
+
 //! LightningScanner
 //!
 //! A lightning-fast memory pattern scanner, capable of scanning gigabytes of data per second.
@@ -10,13 +14,15 @@
 //! let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
 //!
 //! let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-//! let result = unsafe { scanner.find(None, binary.as_ptr(), binary.len()) };
+//! let result = unsafe { scanner.find(binary.as_ptr(), binary.len()) };
 //!
 //! println!("{:?}", result);
 //! ```
 #![deny(unsafe_op_in_unsafe_fn, clippy::undocumented_unsafe_blocks)]
 
 use crate::pattern::Pattern;
+
+extern crate alloc;
 
 mod aligned_bytes;
 mod backends;
@@ -67,18 +73,13 @@ impl Scanner {
     /// let binary = [0xab, 0xec, 0x48, 0x89, 0x5c, 0x24, 0xee, 0x48, 0x89, 0x6c];
     ///
     /// let scanner = Scanner::new("48 89 5c 24 ?? 48 89 6c");
-    /// let result = unsafe { scanner.find(None, binary.as_ptr(), binary.len()) };
+    /// let result = unsafe { scanner.find(binary.as_ptr(), binary.len()) };
     ///
     /// println!("{:?}", result);
     /// ```
-    pub unsafe fn find(
-        &self,
-        preferred_scan_mode: Option<ScanMode>,
-        binary_ptr: *const u8,
-        binary_size: usize,
-    ) -> ScanResult {
+    pub unsafe fn find(&self, binary_ptr: *const u8, binary_size: usize) -> ScanResult {
         // SAFETY: safe to call as long as the safety conditions were met for this function
-        unsafe { backends::find(&self.0, preferred_scan_mode, binary_ptr, binary_size) }
+        unsafe { backends::find(&self.0, binary_ptr, binary_size) }
     }
 }
 
@@ -86,17 +87,6 @@ impl From<Pattern> for Scanner {
     fn from(value: Pattern) -> Self {
         Scanner(value)
     }
-}
-
-/// Scan mode
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ScanMode {
-    /// Scalar scan mode
-    Scalar,
-    /// Scan mode that uses SSE4.2 SIMD instructions
-    Sse42,
-    /// Scan mode that uses AVX2 SIMD instructions
-    Avx2,
 }
 
 /// Scan result

@@ -2,7 +2,6 @@
 
 use crate::pattern::Pattern;
 use crate::ScanResult;
-use std::ptr;
 
 /// Find the first occurrence of a pattern in the binary
 /// using scalar instructions
@@ -47,5 +46,7 @@ pub unsafe fn find(pattern: &Pattern, binary: *const u8, binary_size: usize) -> 
             return ScanResult { addr };
         }
     }
-    ScanResult { addr: ptr::null() }
+    ScanResult {
+        addr: core::ptr::null(),
+    }
 }
