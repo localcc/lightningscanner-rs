@@ -6,7 +6,6 @@ use crate::aligned_bytes::AlignedBytes;
 pub struct Pattern {
     pub(crate) data: Box<AlignedBytes<32>>,
     pub(crate) mask: Box<AlignedBytes<32>>,
-    pub(crate) unpadded_size: usize,
 }
 
 impl Pattern {
@@ -72,7 +71,6 @@ impl Pattern {
         Pattern {
             data: AlignedBytes::new(&data),
             mask: AlignedBytes::new(&mask),
-            unpadded_size,
         }
     }
 
