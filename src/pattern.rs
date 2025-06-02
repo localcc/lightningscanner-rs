@@ -76,6 +76,36 @@ impl Pattern {
         }
     }
 
+    /// Create a new [`Pattern`] instance based upon a string literal.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use lightningscanner::pattern::Pattern;
+    /// 
+    /// Pattern::new_string("LocalPlayer")
+    /// ```
+    pub fn new_string(string: &str) -> Self {
+        let bytes = string.as_bytes();
+        
+        let mut data = bytes.to_vec();
+        let mut mask = vec![0xff; bytes.len()];
+        
+        let unpadded_size = data.len();
+        
+        let count = f32::ceil(unpadded_size as f32 / Self::ALIGNMENT as f32) as usize;
+        let padding_size = count * Self::ALIGNMENT - unpadded_size;
+        
+        data.resize(unpadded_size + padding_size, 0);
+        mask.resize(unpadded_size + padding_size, 0);
+        
+        Pattern {
+            data: AlignedBytes::new(&data),
+            mask: AlignedBytes::new(&mask),
+            unpadded_size,
+        }
+    }
+
     const fn char_to_byte(c: char) -> u8 {
         if c >= 'a' && c <= 'z' {
             c as u8 - b'a' + 0xA

@@ -42,6 +42,19 @@ impl Scanner {
         Scanner(Pattern::new(pattern))
     }
 
+    /// Create a new [`Scanner`] instance, using a string literal pattern.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use lightningscanner::Scanner;
+    /// 
+    /// let scanner = Scanner::new_from_str("LocalPlayer");
+    /// ```
+    pub fn new_from_str(pattern: &str) -> Self {
+        Scanner(Pattern::new_string(pattern))
+    }
+
     /// Find the first occurence of the pattern in the binary
     ///
     /// # Params
