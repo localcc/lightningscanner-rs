@@ -47,7 +47,7 @@ impl Pattern {
                     continue;
                 }
                 _ => {
-                    let byte = Self::char_to_byte(symbol) << 4 | Self::char_to_byte(next_symbol);
+                    let byte = (Self::char_to_byte(symbol) << 4) | Self::char_to_byte(next_symbol);
 
                     data.push(byte);
                     mask.push(0xff);

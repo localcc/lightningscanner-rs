@@ -60,7 +60,7 @@ impl Scanner {
     /// # Params
     ///
     /// * `preferred_scan_mode` - preferred scan mode to use (Avx2, Sse42, Scalar)
-    /// if the preferred mode is not available, will choose the fastest out of the availble ones
+    ///     if the preferred mode is not available, will choose the fastest out of the availble ones
     ///
     /// * `binary_ptr` - pointer to the first element of the binary to search the pattern in
     ///
