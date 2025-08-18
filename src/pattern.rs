@@ -77,28 +77,28 @@ impl Pattern {
     }
 
     /// Create a new [`Pattern`] instance based upon a string literal.
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```
     /// use lightningscanner::pattern::Pattern;
-    /// 
-    /// Pattern::new_string("LocalPlayer")
+    ///
+    /// Pattern::new_string("LocalPlayer");
     /// ```
     pub fn new_string(string: &str) -> Self {
         let bytes = string.as_bytes();
-        
+
         let mut data = bytes.to_vec();
         let mut mask = vec![0xff; bytes.len()];
-        
+
         let unpadded_size = data.len();
-        
+
         let count = f32::ceil(unpadded_size as f32 / Self::ALIGNMENT as f32) as usize;
         let padding_size = count * Self::ALIGNMENT - unpadded_size;
-        
+
         data.resize(unpadded_size + padding_size, 0);
         mask.resize(unpadded_size + padding_size, 0);
-        
+
         Pattern {
             data: AlignedBytes::new(&data),
             mask: AlignedBytes::new(&mask),
@@ -122,5 +122,22 @@ impl Pattern {
 impl From<&str> for Pattern {
     fn from(value: &str) -> Self {
         Pattern::new(value)
+    }
+}
+
+impl Pattern {
+    /// Create a new [`Pattern`] from its raw parts.
+    ///
+    /// This is intended for use in the `create_pattern!` macro.
+    pub fn from_parts(
+        data: Box<AlignedBytes<32>>,
+        mask: Box<AlignedBytes<32>>,
+        unpadded_size: usize,
+    ) -> Self {
+        Self {
+            data,
+            mask,
+            unpadded_size,
+        }
     }
 }

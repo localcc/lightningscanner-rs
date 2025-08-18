@@ -18,9 +18,12 @@
 
 use crate::pattern::Pattern;
 
-mod aligned_bytes;
+pub mod aligned_bytes;
 mod backends;
 pub mod pattern;
+
+#[macro_use]
+mod macros;
 
 /// Single result IDA-style pattern scanner
 ///
@@ -43,12 +46,12 @@ impl Scanner {
     }
 
     /// Create a new [`Scanner`] instance, using a string literal pattern.
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```
     /// use lightningscanner::Scanner;
-    /// 
+    ///
     /// let scanner = Scanner::new_from_str("LocalPlayer");
     /// ```
     pub fn new_from_str(pattern: &str) -> Self {
@@ -60,7 +63,7 @@ impl Scanner {
     /// # Params
     ///
     /// * `preferred_scan_mode` - preferred scan mode to use (Avx2, Sse42, Scalar)
-    ///     if the preferred mode is not available, will choose the fastest out of the availble ones
+    ///   if the preferred mode is not available, will choose the fastest out of the availble ones
     ///
     /// * `binary_ptr` - pointer to the first element of the binary to search the pattern in
     ///
